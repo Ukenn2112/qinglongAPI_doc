@@ -1,0 +1,611 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Qinglong API",
+    "description": "你可以在 `/ql/config/auth.son` 找到用户账号密码",
+    "version": "2022-02-09",
+    "contact": {
+      "name": "Qinglong API",
+      "url": "https://github.com/whyour/qinglong/tree/develop/back/api"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5700/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "用户",
+      "description": "User"
+    },
+    {
+      "name": "环境变量",
+      "description": "Env"
+    },
+    {
+      "name": "配置管理",
+      "description": "Config"
+    },
+    {
+      "name": "任务日志",
+      "description": "Log"
+    },
+    {
+      "name": "定时任务",
+      "description": "Cron"
+    },
+    {
+      "name": "脚本管理",
+      "description": "Script"
+    },
+    {
+      "name": "Open",
+      "description": "Open"
+    },
+    {
+      "name": "依赖管理",
+      "description": "Dependence"
+    },
+    {
+      "name": "System",
+      "description": "System"
+    }
+  ],
+  "paths": {
+    "/user/login": {
+      "post": {
+        "tags": [
+          "用户"
+        ],
+        "summary": "获取用户密钥",
+        "requestBody": {
+          "description": "登录",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "用户名"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "密码"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "返回用户密钥信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "description": "授权密钥"
+                        },
+                        "lastip": {
+                          "type": "string",
+                          "description": "登录IP"
+                        },
+                        "lastaddr": {
+                          "type": "string",
+                          "description": "登录IP归属地"
+                        },
+                        "lastlogon": {
+                          "type": "integer"
+                        },
+                        "retries": {
+                          "type": "integer"
+                        },
+                        "platform": {
+                          "type": "string",
+                          "description": "登录设备"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/": {
+      "get": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "获取任务列表",
+        "description": "使用 Token 返回定时任务列表",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回定时任务列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "任务 ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "任务名称",
+                            "example": "你好世界"
+                          },
+                          "command": {
+                            "type": "string",
+                            "description": "任务命令",
+                            "example": "task helloworld.py"
+                          },
+                          "schedule": {
+                            "type": "string",
+                            "description": "任务定时",
+                            "example": "0 0 * * *"
+                          },
+                          "timestamp": {
+                            "type": "string",
+                            "description": "时间戳",
+                            "example": "Wed Feb 09 2022 13:08:45 GMT+0800 (中国标准时间)"
+                          },
+                          "saved": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "isSystem": {
+                            "type": "integer"
+                          },
+                          "pid": {
+                            "type": "integer",
+                            "example": null
+                          },
+                          "isDisabled": {
+                            "type": "integer"
+                          },
+                          "isPinned": {
+                            "type": "integer"
+                          },
+                          "log_path": {
+                            "type": "string"
+                          },
+                          "labels": {
+                            "type": "array",
+                            "description": "任务标签",
+                            "items": {
+                              "type": "string",
+                              "example": "世界"
+                            }
+                          },
+                          "last_running_time": {
+                            "type": "integer"
+                          },
+                          "last_execution_time": {
+                            "type": "integer"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2022-02-09T05:08:45.450Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2022-02-09T05:50:03.062Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "添加任务",
+        "description": "使用 Token 添加任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "description": "任务命令",
+                    "example": "task helloworld.py"
+                  },
+                  "schedule": {
+                    "type": "string",
+                    "description": "任务定时",
+                    "example": "0 0 * * *"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "任务名",
+                    "example": "任务名"
+                  },
+                  "labels": {
+                    "type": "string",
+                    "description": "标签",
+                    "example": "标签"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "更新任务",
+        "description": "使用 Token 更新任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "labels": {
+                    "type": "string",
+                    "description": "标签",
+                    "example": "标签"
+                  },
+                  "command": {
+                    "type": "string",
+                    "description": "任务命令",
+                    "example": "task helloworld.py"
+                  },
+                  "schedule": {
+                    "type": "string",
+                    "description": "任务定时",
+                    "example": "0 0 * * *"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "任务名",
+                    "example": "任务名"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "description": "任务 ID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "删除任务",
+        "description": "使用 Token 删除任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "任务 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/run": {
+      "put": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "运行任务",
+        "description": "使用 Token 运行任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "任务 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/stop": {
+      "put": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "停止任务",
+        "description": "使用 Token 停止任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "任务 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/labels": {
+      "post": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "添加标签",
+        "description": "使用 Token 添加标签",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "ids": {
+                    "type": "integer",
+                    "description": "任务 ID 可多个ID"
+                  },
+                  "labels": {
+                    "type": "string",
+                    "description": "标签",
+                    "example": "标签"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "删除标签",
+        "description": "使用 Token 删除标签",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "ids": {
+                    "type": "integer",
+                    "description": "任务 ID 可多个ID"
+                  },
+                  "labels": {
+                    "type": "string",
+                    "description": "标签",
+                    "example": "标签"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "description": "require a authorization",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
