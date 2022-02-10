@@ -129,8 +129,8 @@
         "tags": [
           "定时任务"
         ],
-        "summary": "获取任务列表",
-        "description": "使用 Token 返回定时任务列表",
+        "summary": "获取所有任务详情",
+        "description": "使用 Token 返回定时任务详情",
         "security": [
           {
             "HTTPBearer": []
@@ -159,7 +159,7 @@
                           "name": {
                             "type": "string",
                             "description": "任务名称",
-                            "example": "你好世界"
+                            "example": "任务名"
                           },
                           "command": {
                             "type": "string",
@@ -204,7 +204,7 @@
                             "description": "任务标签",
                             "items": {
                               "type": "string",
-                              "example": "世界"
+                              "example": "标签"
                             }
                           },
                           "last_running_time": {
@@ -401,6 +401,125 @@
         }
       }
     },
+    "/crons/{id}": {
+      "get": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "根据 ID 获取任务日志",
+        "description": "使用 Token 获取定时任务详情",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "任务 ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回定时任务列表",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "任务 ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "任务名称",
+                            "example": "任务名"
+                          },
+                          "command": {
+                            "type": "string",
+                            "description": "任务命令",
+                            "example": "task helloworld.py"
+                          },
+                          "schedule": {
+                            "type": "string",
+                            "description": "任务定时",
+                            "example": "0 0 * * *"
+                          },
+                          "timestamp": {
+                            "type": "string",
+                            "description": "时间戳",
+                            "example": "Wed Feb 09 2022 13:08:45 GMT+0800 (中国标准时间)"
+                          },
+                          "saved": {
+                            "type": "boolean"
+                          },
+                          "status": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "isSystem": {
+                            "type": "integer"
+                          },
+                          "pid": {
+                            "type": "integer",
+                            "example": null
+                          },
+                          "isDisabled": {
+                            "type": "integer"
+                          },
+                          "isPinned": {
+                            "type": "integer"
+                          },
+                          "log_path": {
+                            "type": "string"
+                          },
+                          "labels": {
+                            "type": "array",
+                            "description": "任务标签",
+                            "items": {
+                              "type": "string",
+                              "example": "标签"
+                            }
+                          },
+                          "last_running_time": {
+                            "type": "integer"
+                          },
+                          "last_execution_time": {
+                            "type": "integer"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2022-02-09T05:08:45.450Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2022-02-09T05:50:03.062Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crons/run": {
       "put": {
         "tags": [
@@ -572,6 +691,331 @@
                     "type": "string",
                     "description": "标签",
                     "example": "标签"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/disable": {
+      "put": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "禁用任务",
+        "description": "使用 Token 禁用任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "任务 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/enable": {
+      "put": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "启用任务",
+        "description": "使用 Token 启用任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "任务 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/{id}/log": {
+      "get": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "任务日志",
+        "description": "使用 Token 查询任务日志",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "任务 ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/pin": {
+      "put": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "顶置任务",
+        "description": "使用 Token 顶置任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "任务 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/unpin": {
+      "put": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "取消顶置任务",
+        "description": "使用 Token 取消顶置任务",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "任务 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "任务 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/import": {
+      "get": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "import",
+        "description": "使用 Token import",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons/status": {
+      "put": {
+        "tags": [
+          "定时任务"
+        ],
+        "summary": "status",
+        "description": "使用 Token status",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "ids": {
+                    "type": "integer",
+                    "description": "任务 ID 可多个ID"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "pid": {
+                    "type": "string"
+                  },
+                  "log_path": {
+                    "type": "string"
+                  },
+                  "last_running_time": {
+                    "type": "integer"
+                  },
+                  "last_execution_time": {
+                    "type": "integer"
                   }
                 }
               }
