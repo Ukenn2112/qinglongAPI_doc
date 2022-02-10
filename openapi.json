@@ -124,6 +124,573 @@
         }
       }
     },
+    "/envs/": {
+      "get": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "获取所有环境变量详情",
+        "description": "使用 Token 返回环境变量详情",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回所有环境变量",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "变量 ID"
+                          },
+                          "value": {
+                            "type": "string",
+                            "description": "变量值",
+                            "example": "变量值"
+                          },
+                          "timestamp": {
+                            "type": "string",
+                            "description": "时间戳",
+                            "example": "Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)"
+                          },
+                          "status": {
+                            "type": "integer"
+                          },
+                          "position": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "变量名",
+                            "example": "变量名"
+                          },
+                          "remarks": {
+                            "type": "string",
+                            "description": "备注",
+                            "example": "备注"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2022-02-01T03:00:53.572Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2022-02-10T03:30:08.079Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "添加环境变量",
+        "description": "使用 Token 添加环境变量",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "description": "变量值",
+                    "example": "变量值"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "变量名",
+                    "example": "变量名"
+                  },
+                  "remarks": {
+                    "type": "string",
+                    "description": "备注",
+                    "example": "备注"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "更新环境变量",
+        "description": "使用 Token 更新环境变量",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "value": {
+                    "type": "string",
+                    "description": "变量值",
+                    "example": "变量值"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "变量名",
+                    "example": "变量名"
+                  },
+                  "remarks": {
+                    "type": "string",
+                    "description": "备注",
+                    "example": "备注"
+                  },
+                  "id": {
+                    "type": "integer",
+                    "description": "变量 ID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "删除环境变量",
+        "description": "使用 Token 删除环境变量",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "变量 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "变量 ID",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/envs/{id}": {
+      "get": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "根据 ID 获取环境变量",
+        "description": "使用 Token 获取环境变量详情",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "变量 ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "返回该变量 ID 的环境变量详情",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "变量 ID"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "变量值",
+                          "example": "变量值"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "description": "时间戳",
+                          "example": "Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)"
+                        },
+                        "status": {
+                          "type": "integer"
+                        },
+                        "position": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "变量名",
+                          "example": "变量名"
+                        },
+                        "remarks": {
+                          "type": "string",
+                          "description": "备注",
+                          "example": "备注"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2022-02-01T03:00:53.572Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2022-02-10T03:30:08.079Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/envs/{id}/move": {
+      "get": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "move",
+        "description": "使用 Token move",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "变量 ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "变量 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "fromIndex": {
+                    "type": "integer"
+                  },
+                  "toIndex": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "返回该变量 ID 的环境变量详情",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "变量 ID"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "变量值",
+                          "example": "变量值"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "description": "时间戳",
+                          "example": "Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)"
+                        },
+                        "status": {
+                          "type": "integer"
+                        },
+                        "position": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "变量名",
+                          "example": "变量名"
+                        },
+                        "remarks": {
+                          "type": "string",
+                          "description": "备注",
+                          "example": "备注"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2022-02-01T03:00:53.572Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2022-02-10T03:30:08.079Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/envs/disable": {
+      "put": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "禁用环境变量",
+        "description": "使用 Token 禁用环境变量",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "变量 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "变量 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/envs/enable": {
+      "put": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "启用环境变量",
+        "description": "使用 Token 启用环境变量",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "变量 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "变量 ID",
+                "items": {
+                  "type": "integer",
+                  "example": 1660
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/envs/name": {
+      "put": {
+        "tags": [
+          "环境变量"
+        ],
+        "summary": "修改环境变量名",
+        "description": "使用 Token 修改环境变量名",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "变量 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "ids": {
+                    "type": "integer",
+                    "description": "变量 ID"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "变量名",
+                    "example": "变量名"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/crons/": {
       "get": {
         "tags": [
@@ -138,7 +705,7 @@
         ],
         "responses": {
           "200": {
-            "description": "返回定时任务列表",
+            "description": "返回定时任务详情",
             "content": {
               "application/json": {
                 "schema": {
@@ -426,7 +993,7 @@
         ],
         "responses": {
           "200": {
-            "description": "返回定时任务列表",
+            "description": "返回该变量 ID 的定时任务详情",
             "content": {
               "application/json": {
                 "schema": {
@@ -436,79 +1003,75 @@
                       "example": 200
                     },
                     "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "integer",
-                            "description": "任务 ID"
-                          },
-                          "name": {
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "description": "任务 ID"
+                        },
+                        "name": {
+                          "type": "string",
+                          "description": "任务名称",
+                          "example": "任务名"
+                        },
+                        "command": {
+                          "type": "string",
+                          "description": "任务命令",
+                          "example": "task helloworld.py"
+                        },
+                        "schedule": {
+                          "type": "string",
+                          "description": "任务定时",
+                          "example": "0 0 * * *"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "description": "时间戳",
+                          "example": "Wed Feb 09 2022 13:08:45 GMT+0800 (中国标准时间)"
+                        },
+                        "saved": {
+                          "type": "boolean"
+                        },
+                        "status": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "isSystem": {
+                          "type": "integer"
+                        },
+                        "pid": {
+                          "type": "integer",
+                          "example": null
+                        },
+                        "isDisabled": {
+                          "type": "integer"
+                        },
+                        "isPinned": {
+                          "type": "integer"
+                        },
+                        "log_path": {
+                          "type": "string"
+                        },
+                        "labels": {
+                          "type": "array",
+                          "description": "任务标签",
+                          "items": {
                             "type": "string",
-                            "description": "任务名称",
-                            "example": "任务名"
-                          },
-                          "command": {
-                            "type": "string",
-                            "description": "任务命令",
-                            "example": "task helloworld.py"
-                          },
-                          "schedule": {
-                            "type": "string",
-                            "description": "任务定时",
-                            "example": "0 0 * * *"
-                          },
-                          "timestamp": {
-                            "type": "string",
-                            "description": "时间戳",
-                            "example": "Wed Feb 09 2022 13:08:45 GMT+0800 (中国标准时间)"
-                          },
-                          "saved": {
-                            "type": "boolean"
-                          },
-                          "status": {
-                            "type": "integer",
-                            "example": 1
-                          },
-                          "isSystem": {
-                            "type": "integer"
-                          },
-                          "pid": {
-                            "type": "integer",
-                            "example": null
-                          },
-                          "isDisabled": {
-                            "type": "integer"
-                          },
-                          "isPinned": {
-                            "type": "integer"
-                          },
-                          "log_path": {
-                            "type": "string"
-                          },
-                          "labels": {
-                            "type": "array",
-                            "description": "任务标签",
-                            "items": {
-                              "type": "string",
-                              "example": "标签"
-                            }
-                          },
-                          "last_running_time": {
-                            "type": "integer"
-                          },
-                          "last_execution_time": {
-                            "type": "integer"
-                          },
-                          "createdAt": {
-                            "type": "string",
-                            "example": "2022-02-09T05:08:45.450Z"
-                          },
-                          "updatedAt": {
-                            "type": "string",
-                            "example": "2022-02-09T05:50:03.062Z"
+                            "example": "标签"
                           }
+                        },
+                        "last_running_time": {
+                          "type": "integer"
+                        },
+                        "last_execution_time": {
+                          "type": "integer"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2022-02-09T05:08:45.450Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2022-02-09T05:50:03.062Z"
                         }
                       }
                     }
