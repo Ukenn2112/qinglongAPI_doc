@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Qinglong API",
-    "description": "在 `在系统设置 -> 应用设置 -> 添加应用` 生成 `client_id` 和 `client_secret`",
+    "description": "在 `系统设置 -> 应用设置 -> 添加应用` 生成 `client_id` 和 `client_secret`",
     "version": "2022-02-09",
     "contact": {
       "name": "Qinglong API",
@@ -11,7 +11,12 @@
   },
   "servers": [
     {
+      "description": "OpenAPI",
       "url": "http://localhost:5700/open"
+    },
+    {
+      "description": "SystemAPI",
+      "url": "http://localhost:5700/api"
     }
   ],
   "tags": [
@@ -103,6 +108,77 @@
                         "expiration": {
                           "type": "integer",
                           "description": "有效期 默认30天"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "tags": [
+          "用户"
+        ],
+        "summary": "系统接口登录获取用户密钥",
+        "requestBody": {
+          "description": "登录",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "username": {
+                    "type": "string",
+                    "description": "用户名"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "密码"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "返回用户密钥信息",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "token": {
+                          "type": "string",
+                          "description": "授权密钥"
+                        },
+                        "lastip": {
+                          "type": "string",
+                          "description": "登录IP"
+                        },
+                        "lastaddr": {
+                          "type": "string",
+                          "description": "登录IP归属地"
+                        },
+                        "lastlogon": {
+                          "type": "integer"
+                        },
+                        "retries": {
+                          "type": "integer"
+                        },
+                        "platform": {
+                          "type": "string",
+                          "description": "登录设备"
                         }
                       }
                     }
