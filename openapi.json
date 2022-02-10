@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Qinglong API",
-    "description": "你可以在 `/ql/config/auth.son` 找到用户账号密码",
+    "description": "在 `在系统设置 -> 应用设置 -> 添加应用` 生成 `client_id` 和 `client_secret`",
     "version": "2022-02-09",
     "contact": {
       "name": "Qinglong API",
@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5700/api"
+      "url": "http://localhost:5700/open"
     }
   ],
   "tags": [
@@ -53,32 +53,32 @@
     }
   ],
   "paths": {
-    "/user/login": {
-      "post": {
+    "/auth/token": {
+      "get": {
         "tags": [
           "用户"
         ],
         "summary": "获取用户密钥",
-        "requestBody": {
-          "description": "登录",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "username": {
-                    "type": "string",
-                    "description": "用户名"
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "密码"
-                  }
-                }
-              }
+        "parameters": [
+          {
+            "name": "client_id",
+            "in": "query",
+            "description": "Client ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "client_secret",
+            "in": "query",
+            "description": "Client Secret",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "返回用户密钥信息",
@@ -96,23 +96,13 @@
                           "type": "string",
                           "description": "授权密钥"
                         },
-                        "lastip": {
+                        "token_type": {
                           "type": "string",
-                          "description": "登录IP"
+                          "description": "标记类型"
                         },
-                        "lastaddr": {
-                          "type": "string",
-                          "description": "登录IP归属地"
-                        },
-                        "lastlogon": {
-                          "type": "integer"
-                        },
-                        "retries": {
-                          "type": "integer"
-                        },
-                        "platform": {
-                          "type": "string",
-                          "description": "登录设备"
+                        "expiration": {
+                          "type": "integer",
+                          "description": "有效期 默认30天"
                         }
                       }
                     }
