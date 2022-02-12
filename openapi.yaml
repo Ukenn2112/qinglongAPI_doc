@@ -1,0 +1,2560 @@
+openapi: 3.0.3
+info:
+  title: Qinglong API
+  description: 在 `系统设置 -> 应用设置 -> 添加应用` 生成 `client_id` 和 `client_secret`
+  version: '2022-02-12'
+  contact:
+    name: Qinglong API
+    url: https://github.com/whyour/qinglong/tree/develop/back/api
+servers:
+  - description: OpenAPI
+    url: http://192.168.50.125:5700/open
+  - description: SystemAPI
+    url: http://192.168.50.125:5700/api
+tags:
+  - name: 用户
+    description: User
+  - name: 环境变量
+    description: Env
+  - name: 配置管理
+    description: Config
+  - name: 任务日志
+    description: Log
+  - name: 定时任务
+    description: Cron
+  - name: 脚本管理
+    description: Script
+  - name: 依赖管理
+    description: Dependence `貌似有点问题？待排查`
+  - name: 系统管理
+    description: System
+  - name: OpenAPI
+    description: Open
+  
+paths:
+  /auth/token:
+    get:
+      tags:
+        - 用户
+      summary: 获取用户密钥
+      parameters:
+        - name: client_id
+          in: query
+          description: Client ID
+          required: true
+          schema:
+            type: string
+        - name: client_secret
+          in: query
+          description: Client Secret
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 返回用户密钥信息
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      token:
+                        type: string
+                        description: 授权密钥
+                      token_type:
+                        type: string
+                        description: 标记类型
+                      expiration:
+                        type: integer
+                        description: 有效期 默认30天
+  /user/login:
+    post:
+      tags:
+        - 用户
+      summary: 系统接口登录获取用户密钥
+      requestBody:
+        description: 登录
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                username:
+                  type: string
+                  description: 用户名
+                password:
+                  type: string
+                  description: 密码
+      responses:
+        '200':
+          description: 返回用户密钥信息
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      token:
+                        type: string
+                        description: 授权密钥
+                      lastip:
+                        type: string
+                        description: 登录IP
+                      lastaddr:
+                        type: string
+                        description: 登录IP归属地
+                      lastlogon:
+                        type: integer
+                      retries:
+                        type: integer
+                      platform:
+                        type: string
+                        description: 登录设备
+  /envs:
+    get:
+      tags:
+        - 环境变量
+      summary: 获取所有环境变量详情
+      description: 使用 Token 返回环境变量详情
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 返回所有环境变量
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: 变量 ID
+                        value:
+                          type: string
+                          description: 变量值
+                          example: 变量值
+                        timestamp:
+                          type: string
+                          description: 时间戳
+                          example: Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)
+                        status:
+                          type: integer
+                        position:
+                          type: integer
+                        name:
+                          type: string
+                          description: 变量名
+                          example: 变量名
+                        remarks:
+                          type: string
+                          description: 备注
+                          example: 备注
+                        createdAt:
+                          type: string
+                          example: "2022-02-01T03:00:53.572Z"
+                        updatedAt:
+                          type: string
+                          example: "2022-02-10T03:30:08.079Z"
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    post:
+      tags:
+        - 环境变量
+      summary: 添加环境变量
+      description: 使用 Token 添加环境变量
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                value:
+                  type: string
+                  description: 变量值
+                  example: 变量值
+                name:
+                  type: string
+                  description: 变量名
+                  example: 变量名
+                remarks:
+                  type: string
+                  description: 备注
+                  example: 备注
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    put:
+      tags:
+        - 环境变量
+      summary: 更新环境变量
+      description: 使用 Token 更新环境变量
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                value:
+                  type: string
+                  description: 变量值
+                  example: 变量值
+                name:
+                  type: string
+                  description: 变量名
+                  example: 变量名
+                remarks:
+                  type: string
+                  description: 备注
+                  example: 备注
+                id:
+                  type: integer
+                  description: 变量 ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    delete:
+      tags:
+        - 环境变量
+      summary: 删除环境变量
+      description: 使用 Token 删除环境变量
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 变量 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 变量 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /envs/{id}:
+    get:
+      tags:
+        - 环境变量
+      summary: 根据 ID 获取环境变量
+      description: 使用 Token 获取环境变量详情
+      security:
+        - HTTPBearer: []
+      parameters:
+        - name: id
+          in: path
+          description: 变量 ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 返回该变量 ID 的环境变量详情
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      id:
+                        type: integer
+                        description: 变量 ID
+                      value:
+                        type: string
+                        description: 变量值
+                        example: 变量值
+                      timestamp:
+                        type: string
+                        description: 时间戳
+                        example: Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)
+                      status:
+                        type: integer
+                      position:
+                        type: integer
+                      name:
+                        type: string
+                        description: 变量名
+                        example: 变量名
+                      remarks:
+                        type: string
+                        description: 备注
+                        example: 备注
+                      createdAt:
+                        type: string
+                        example: "2022-02-01T03:00:53.572Z"
+                      updatedAt:
+                        type: string
+                        example: "2022-02-10T03:30:08.079Z"
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /envs/{id}/move:
+    get:
+      tags:
+        - 环境变量
+      summary: move
+      description: 使用 Token move
+      security:
+        - HTTPBearer: []
+      parameters:
+        - name: id
+          in: path
+          description: 变量 ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: 变量 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                fromIndex:
+                  type: integer
+                toIndex:
+                  type: integer
+      responses:
+        '200':
+          description: 返回该变量 ID 的环境变量详情
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      id:
+                        type: integer
+                        description: 变量 ID
+                      value:
+                        type: string
+                        description: 变量值
+                        example: 变量值
+                      timestamp:
+                        type: string
+                        description: 时间戳
+                        example: Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)
+                      status:
+                        type: integer
+                      position:
+                        type: integer
+                      name:
+                        type: string
+                        description: 变量名
+                        example: 变量名
+                      remarks:
+                        type: string
+                        description: 备注
+                        example: 备注
+                      createdAt:
+                        type: string
+                        example: "2022-02-01T03:00:53.572Z"
+                      updatedAt:
+                        type: string
+                        example: "2022-02-10T03:30:08.079Z"
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError                
+  /envs/disable:
+    put:
+      tags:
+        - 环境变量
+      summary: 禁用环境变量
+      description: 使用 Token 禁用环境变量
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 变量 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 变量 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /envs/enable:
+    put:
+      tags:
+        - 环境变量
+      summary: 启用环境变量
+      description: 使用 Token 启用环境变量
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 变量 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 变量 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /envs/name:
+    put:
+      tags:
+        - 环境变量
+      summary: 修改环境变量名
+      description: 使用 Token 修改环境变量名
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 变量 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ids:
+                  type: integer
+                  description: 变量 ID
+                name:
+                  type: string
+                  description: 变量名
+                  example: 变量名
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /configs/files:  
+    get:
+        tags:
+          - 配置管理
+        summary: 获取配置文件列表
+        description: 使用 Token 获取配置文件列表
+        security:
+          - HTTPBearer: []
+        responses:
+          '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            description: 配置文件名
+                          value:
+                            type: string
+                            description: 配置文件值
+          '401':
+            description: 未授权
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 401
+                    message:
+                      type: string
+                      example: UnauthorizedError
+  /configs/{file}:
+    get:
+        tags:
+          - 配置管理
+        summary: 获取配置文件内容
+        description: 使用 Token 获取配置文件内容
+        security:
+          - HTTPBearer: []
+        parameters:
+          - name: file
+            in: path
+            description: 配置文件名
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    data:
+                      type: string
+                      description: 配置文件内容
+                      example: 配置文件内容
+          '401':
+            description: 未授权
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 401
+                    message:
+                      type: string
+                      example: UnauthorizedError
+  /configs/save:
+    post:
+        tags:
+          - 配置管理
+        summary: 保存配置文件
+        description: 使用 Token 获取配置文件列表
+        security:
+          - HTTPBearer: []
+        requestBody:
+          description: 保存配置文件
+          required: true
+          content:
+            application/json:
+              schema:
+                properties:
+                  name:
+                    type: string
+                    description: 配置文件名
+                  content:
+                    type: string
+                    description: 内容
+        responses:
+          '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    message:
+                      type: string
+                      example: 保存成功
+          '401':
+            description: 未授权
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 401
+                    message:
+                      type: string
+                      example: UnauthorizedError
+          '403':
+            description: 失败
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 401
+                    message:
+                      type: string
+                      example: 文件无法访问
+  /logs:
+    get:
+        tags:
+          - 任务日志
+        summary: 获取所有任务日志列表
+        description: 使用 Token 获取所有任务日志列表
+        security:
+          - HTTPBearer: []
+        responses:
+          '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    isDir:
+                      type: boolean
+                    files:
+                      type: array
+                      items:
+                        type: string
+                        properties:
+                          items:
+                            type: string
+          '401':
+            description: 未授权
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 401
+                    message:
+                      type: string
+                      example: UnauthorizedError
+  /logs/{dir}/{file}:
+    get:
+        tags:
+          - 任务日志
+        summary: 获取任务日志
+        description: 使用 Token 获取任务日志
+        security:
+          - HTTPBearer: []
+        parameters:
+          - name: dir
+            in: path
+            description: 日志目录
+            required: true
+            schema:
+              type: string
+          - name: file
+            in: path
+            description: 日志文件名
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    data:
+                      type: string
+                      example: 日志文件内容
+          '401':
+            description: 未授权
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 401
+                    message:
+                      type: string
+                      example: UnauthorizedError
+  /logs/{file}:
+    get:
+        tags:
+          - 任务日志
+        summary: 获取任务日志
+        description: 使用 Token 获取任务日志
+        security:
+          - HTTPBearer: []
+        parameters:
+          - name: file
+            in: path
+            description: 日志文件名
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: 成功
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 200
+                    data:
+                      type: string
+                      example: 日志文件内容
+          '401':
+            description: 未授权
+            content:
+              application/json:
+                schema:
+                  properties:
+                    code:
+                      type: integer
+                      example: 401
+                    message:
+                      type: string
+                      example: UnauthorizedError
+  /crons:
+    get:
+      tags:
+        - 定时任务
+      summary: 获取所有任务详情
+      description: 使用 Token 返回定时任务详情
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 返回定时任务详情
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: 任务 ID
+                        name:
+                          type: string
+                          description: 任务名称
+                          example: 任务名
+                        command:
+                          type: string
+                          description: 任务命令
+                          example: task helloworld.py
+                        schedule:
+                          type: string
+                          description: 任务定时
+                          example: 0 0 * * *
+                        timestamp:
+                          type: string
+                          description: 时间戳
+                          example: Wed Feb 09 2022 13:08:45 GMT+0800 (中国标准时间)
+                        saved:
+                          type: boolean
+                        status:
+                          type: integer
+                          example: 1
+                        isSystem:
+                          type: integer
+                        pid:
+                          type: integer
+                          example: null
+                        isDisabled:
+                          type: integer
+                        isPinned:
+                          type: integer
+                        log_path:
+                          type: string
+                        labels:
+                          type: array
+                          description: 任务标签
+                          items:
+                            type: string
+                            example: 标签
+                        last_running_time:
+                          type: integer
+                        last_execution_time:
+                          type: integer
+                        createdAt:
+                          type: string
+                          example: "2022-02-09T05:08:45.450Z"
+                        updatedAt:
+                          type: string
+                          example: "2022-02-09T05:50:03.062Z"
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    post:
+      tags:
+        - 定时任务
+      summary: 添加任务
+      description: 使用 Token 添加任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                command:
+                  type: string
+                  description: 任务命令
+                  example: task helloworld.py
+                schedule:
+                  type: string
+                  description: 任务定时
+                  example: 0 0 * * *
+                name:
+                  type: string
+                  description: 任务名
+                  example: 任务名
+                labels:
+                  type: string
+                  description: 标签
+                  example: 标签
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    put:
+      tags:
+        - 定时任务
+      summary: 更新任务
+      description: 使用 Token 更新任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                labels:
+                  type: string
+                  description: 标签
+                  example: 标签
+                command:
+                  type: string
+                  description: 任务命令
+                  example: task helloworld.py
+                schedule:
+                  type: string
+                  description: 任务定时
+                  example: 0 0 * * *
+                name:
+                  type: string
+                  description: 任务名
+                  example: 任务名
+                id:
+                  type: integer
+                  description: 任务 ID
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    delete:
+      tags:
+        - 定时任务
+      summary: 删除任务
+      description: 使用 Token 删除任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 任务 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/{id}:
+    get:
+      tags:
+        - 定时任务
+      summary: 根据 ID 获取任务日志
+      description: 使用 Token 获取定时任务详情
+      security:
+        - HTTPBearer: []
+      parameters:
+        - name: id
+          in: path
+          description: 任务 ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 返回该变量 ID 的定时任务详情
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      id:
+                        type: integer
+                        description: 任务 ID
+                      name:
+                        type: string
+                        description: 任务名称
+                        example: 任务名
+                      command:
+                        type: string
+                        description: 任务命令
+                        example: task helloworld.py
+                      schedule:
+                        type: string
+                        description: 任务定时
+                        example: 0 0 * * *
+                      timestamp:
+                        type: string
+                        description: 时间戳
+                        example: Wed Feb 09 2022 13:08:45 GMT+0800 (中国标准时间)
+                      saved:
+                        type: boolean
+                      status:
+                        type: integer
+                        example: 1
+                      isSystem:
+                        type: integer
+                      pid:
+                        type: integer
+                        example: null
+                      isDisabled:
+                        type: integer
+                      isPinned:
+                        type: integer
+                      log_path:
+                        type: string
+                      labels:
+                        type: array
+                        description: 任务标签
+                        items:
+                          type: string
+                          example: 标签
+                      last_running_time:
+                        type: integer
+                      last_execution_time:
+                        type: integer
+                      createdAt:
+                        type: string
+                        example: "2022-02-09T05:08:45.450Z"
+                      updatedAt:
+                        type: string
+                        example: "2022-02-09T05:50:03.062Z"
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/run:
+    put:
+      tags:
+        - 定时任务
+      summary: 运行任务
+      description: 使用 Token 运行任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 任务 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/stop:
+    put:
+      tags:
+        - 定时任务
+      summary: 停止任务
+      description: 使用 Token 停止任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 任务 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/labels:
+    post:
+      tags:
+        - 定时任务
+      summary: 添加标签
+      description: 使用 Token 添加标签
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ids:
+                  type: integer
+                  description: 任务 ID 可多个ID
+                labels:
+                  type: string
+                  description: 标签
+                  example: 标签
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    delete:
+      tags:
+        - 定时任务
+      summary: 删除标签
+      description: 使用 Token 删除标签
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ids:
+                  type: integer
+                  description: 任务 ID 可多个ID
+                labels:
+                  type: string
+                  description: 标签
+                  example: 标签
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/disable:
+    put:
+      tags:
+        - 定时任务
+      summary: 禁用任务
+      description: 使用 Token 禁用任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 任务 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/enable:
+    put:
+      tags:
+        - 定时任务
+      summary: 启用任务
+      description: 使用 Token 启用任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 任务 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/{id}/log:
+    get:
+      tags:
+        - 定时任务
+      summary: 任务日志
+      description: 使用 Token 查询任务日志
+      security:
+        - HTTPBearer: []
+      parameters:
+        - name: id
+          in: path
+          description: 任务 ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: string
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/pin:
+    put:
+      tags:
+        - 定时任务
+      summary: 顶置任务
+      description: 使用 Token 顶置任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 任务 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/unpin:
+    put:
+      tags:
+        - 定时任务
+      summary: 取消顶置任务
+      description: 使用 Token 取消顶置任务
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 任务 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 任务 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /crons/import:
+    get:
+      tags:
+        - 定时任务
+      summary: import
+      description: 使用 Token import
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  
+  /crons/status:
+    put:
+      tags:
+        - 定时任务
+      summary: status
+      description: 使用 Token status
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                ids:
+                  type: integer
+                  description: 任务 ID 可多个ID
+                status:
+                  type: string
+                pid:
+                  type: string
+                log_path:
+                  type: string
+                last_running_time:
+                  type: integer
+                last_execution_time:
+                  type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /scripts/files:
+    get:
+      tags:
+        - 脚本管理
+      summary: 获取所有脚本列表
+      description: 使用 Token 获取所有脚本列表
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          description: 脚本目录
+                        value:
+                          type: string
+                        key:
+                          type: string
+                        mtime:
+                          type: integer
+                        disabled:
+                          type: boolean
+                        children:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                                description: 脚本名
+                              value:
+                                type: string
+                              key:
+                                type: string
+                                description: 路径
+                              mtime:
+                                type: integer
+                              parent:
+                                type: string
+                                description: 脚本所处目录
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /scripts/{file}:
+    get:
+      tags:
+        - 脚本管理
+      summary: 获取脚本内容  【未知错误】
+      description: 使用 Token 脚本内容
+      security:
+        - HTTPBearer: []
+      parameters:
+        - name: file
+          in: path
+          description: 任务 ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          description: 脚本目录
+                        value:
+                          type: string
+                        key:
+                          type: string
+                        mtime:
+                          type: integer
+                        disabled:
+                          type: boolean
+                        children:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              title:
+                                type: string
+                                description: 脚本名
+                              value:
+                                type: string
+                              key:
+                                type: string
+                                description: 路径
+                              mtime:
+                                type: integer
+                              parent:
+                                type: string
+                                description: 脚本所处目录
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /scripts:
+    post:
+      tags:
+        - 脚本管理
+      summary: 添加脚本
+      description: 使用 Token 添加脚本
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                filename:
+                  type: string
+                  description: 文件名
+                path:
+                  type: string
+                  description: 路径
+                content:
+                  type: string
+                  description: 内容
+                originFilename:
+                  type: string
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+        '430':
+          description: 失败
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 430
+                  data:
+                    type: string
+                    example: 文件路径禁止访问
+    put:
+      tags:
+        - 脚本管理
+      summary: 更新脚本
+      description: 使用 Token 更新脚本
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                filename:
+                  type: string
+                  description: 文件名
+                path:
+                  type: string
+                  description: 路径
+                content:
+                  type: string
+                  description: 内容
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    delete:
+      tags:
+        - 脚本管理
+      summary: 删除脚本
+      description: 使用 Token 删除脚本
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                filename:
+                  type: string
+                  description: 文件名
+                path:
+                  type: string
+                  description: 路径
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /scripts/download:
+    post:
+      tags:
+        - 脚本管理
+      summary: 下载脚本
+      description: 使用 Token 下载脚本
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                filename:
+                  type: string
+                  description: 文件名
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /scripts/run:
+    put:
+      tags:
+        - 脚本管理
+      summary: 运行脚本
+      description: 使用 Token 运行脚本
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                filename:
+                  type: string
+                  description: 文件名
+                path:
+                  type: string
+                  description: 路径
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /scripts/stop:
+    put:
+      tags:
+        - 脚本管理
+      summary: 停止运行脚本
+      description: 使用 Token 停止运行脚本
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                filename:
+                  type: string
+                  description: 文件名
+                path:
+                  type: string
+                  description: 路径
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /dependencies:  
+    get:
+      tags:
+        - 依赖管理
+      summary: 获取已安装依赖 【未知错误】
+      description: 使用 Token 获取已安装依赖
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    post:
+      tags:
+        - 依赖管理
+      summary: 添加依赖 【未知错误】
+      description: 使用 Token 添加依赖 `依赖类型:` `0 NodeJs` `1 Python3` `2 Linux`
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: 依赖名
+                type:
+                  type: integer
+                  description: 类型
+                remark:
+                  type: string
+                  description: 备注
+                  example: 备注
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    put:
+      tags:
+        - 依赖管理
+      summary: 更新依赖 【未知错误】
+      description: 使用 Token 更新依赖 `依赖类型:` `0 NodeJs` `1 Python3` `2 Linux`
+      security:
+        - HTTPBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  type: string
+                  description: 依赖名
+                id:
+                  type: string
+                  description: 依赖 ID
+                type:
+                  type: integer
+                  description: 类型
+                remark:
+                  type: string
+                  description: 备注
+                  example: 备注
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    delete:
+      tags:
+        - 依赖管理
+      summary: 删除依赖 【未知错误】
+      description: 使用 Token 删除依赖
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 依赖 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 依赖 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /dependencies/{id}:
+    get:
+      tags:
+        - 依赖管理
+      summary: 依赖详情
+      description: 使用 Token 根据依赖 ID 查询依赖详情
+      security:
+        - HTTPBearer: []
+      parameters:
+        - name: id
+          in: path
+          description: 依赖 ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                        example: 依赖名
+                      type:
+                        type: integer
+                        description: 依赖类型 1为js 2为py 3为linux
+                      timestamp:
+                        type: string
+                        example: Sat Feb 05 2022 11:46:54 GMT+0800 (中国标准时间)
+                      status:
+                        type: integer
+                      log:
+                        type: array
+                        items:
+                          type: string
+                      remark:
+                        type: string
+                        description: 备注
+                        example: 备注
+                      createdAt:
+                        type: string
+                        example: "2022-02-05T03:46:54.049Z"
+                      updatedAt:
+                        type: string
+                        example: "2022-02-07T19:21:35.141Z"
+                        
+                      
+                        
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /dependencies/force:
+    delete:
+      tags:
+        - 依赖管理
+      summary: force 【未知错误】
+      description: 使用 Token force
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 依赖 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 依赖 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /dependencies/reinstall:
+    put:
+      tags:
+        - 依赖管理
+      summary: 重装依赖
+      description: 使用 Token 重装依赖 `依赖类型:` `0 NodeJs` `1 Python3` `2 Linux`
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 依赖 ID 可多个ID
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              description: 依赖 ID
+              items:
+                type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /system:
+    get:
+      tags:
+        - 系统管理
+      summary: 系统版本
+      description: 使用 Token 查询系统版本
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      isInitialized:
+                        type: boolean
+                      version:
+                        type: string
+                        description: 当前版本
+                        example: 2.11.2
+                        
+                        
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /system/log/remove:
+    get:
+      tags:
+        - 系统管理
+      summary: 日志删除频率
+      description: 使用 Token 查询日志删除频率
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      frequency:
+                        type: integer
+                        description: 日志删除频率(天)
+                        example: 7
+                        
+                        
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+    put:
+      tags:
+        - 系统管理
+      summary: 更新日志删除频率
+      description: 使用 Token 更新日志删除频率
+      security:
+        - HTTPBearer: []
+      requestBody:
+        description: 日志删除频率(天)
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                frequency:
+                  type: integer
+                  description: 日志删除频率(天)
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                        example: 删除日志
+                      command:
+                        type: string
+                        example: ql rmlog 7
+                      schedule:
+                        type: string
+                        example: 5 23 */7 * *
+                        
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /system/update-check:
+    put:
+      tags:
+        - 系统管理
+      summary: 检测更新
+      description: 使用 Token 检测更新
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  data:
+                    properties:
+                      hasNewVersion:
+                        type: boolean
+                        description: 是否有新版本
+                      name:
+                        type: string
+                        example: 删除日志
+                      lastVersion:
+                        type: string
+                        description: 下个版本
+                      lastLog:
+                        type: string
+                        description: 更新日志
+                        
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+  /system/update:
+    put:
+      tags:
+        - 系统管理
+      summary: 更新面板
+      description: 使用 Token 更新面板
+      security:
+        - HTTPBearer: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                        
+        '401':
+          description: 未授权
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: integer
+                    example: 401
+                  message:
+                    type: string
+                    example: UnauthorizedError
+components:
+  schemas: {}
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      description: require a authorization
+      scheme: bearer

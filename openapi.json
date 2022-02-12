@@ -3,7 +3,7 @@
   "info": {
     "title": "Qinglong API",
     "description": "在 `系统设置 -> 应用设置 -> 添加应用` 生成 `client_id` 和 `client_secret`",
-    "version": "2022-02-09",
+    "version": "2022-02-12",
     "contact": {
       "name": "Qinglong API",
       "url": "https://github.com/whyour/qinglong/tree/develop/back/api"
@@ -45,16 +45,16 @@
       "description": "Script"
     },
     {
-      "name": "OpenAPI",
-      "description": "Open"
-    },
-    {
       "name": "依赖管理",
-      "description": "Dependence"
+      "description": "Dependence `貌似有点问题？待排查`"
     },
     {
       "name": "系统管理",
       "description": "System"
+    },
+    {
+      "name": "OpenAPI",
+      "description": "Open"
     }
   ],
   "paths": {
@@ -190,7 +190,7 @@
         }
       }
     },
-    "/envs/": {
+    "/envs": {
       "get": {
         "tags": [
           "环境变量"
@@ -746,8 +746,7 @@
                 "type": "array",
                 "description": "变量 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -812,8 +811,7 @@
                 "type": "array",
                 "description": "变量 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -1153,7 +1151,210 @@
         }
       }
     },
-    "/crons/": {
+    "/logs": {
+      "get": {
+        "tags": [
+          "任务日志"
+        ],
+        "summary": "获取所有任务日志列表",
+        "description": "使用 Token 获取所有任务日志列表",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "isDir": {
+                      "type": "boolean"
+                    },
+                    "files": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "properties": {
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/{dir}/{file}": {
+      "get": {
+        "tags": [
+          "任务日志"
+        ],
+        "summary": "获取任务日志",
+        "description": "使用 Token 获取任务日志",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "dir",
+            "in": "path",
+            "description": "日志目录",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "file",
+            "in": "path",
+            "description": "日志文件名",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "string",
+                      "example": "日志文件内容"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/{file}": {
+      "get": {
+        "tags": [
+          "任务日志"
+        ],
+        "summary": "获取任务日志",
+        "description": "使用 Token 获取任务日志",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "path",
+            "description": "日志文件名",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "string",
+                      "example": "日志文件内容"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/crons": {
       "get": {
         "tags": [
           "定时任务"
@@ -1461,8 +1662,7 @@
                 "type": "array",
                 "description": "任务 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -1661,8 +1861,7 @@
                 "type": "array",
                 "description": "任务 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -1727,8 +1926,7 @@
                 "type": "array",
                 "description": "任务 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -1933,8 +2131,7 @@
                 "type": "array",
                 "description": "任务 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -1999,8 +2196,7 @@
                 "type": "array",
                 "description": "任务 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -2129,8 +2325,7 @@
                 "type": "array",
                 "description": "任务 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -2195,8 +2390,7 @@
                 "type": "array",
                 "description": "任务 ID",
                 "items": {
-                  "type": "integer",
-                  "example": 1660
+                  "type": "integer"
                 }
               }
             }
@@ -2332,6 +2526,1488 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts/files": {
+      "get": {
+        "tags": [
+          "脚本管理"
+        ],
+        "summary": "获取所有脚本列表",
+        "description": "使用 Token 获取所有脚本列表",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "脚本目录"
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "mtime": {
+                            "type": "integer"
+                          },
+                          "disabled": {
+                            "type": "boolean"
+                          },
+                          "children": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string",
+                                  "description": "脚本名"
+                                },
+                                "value": {
+                                  "type": "string"
+                                },
+                                "key": {
+                                  "type": "string",
+                                  "description": "路径"
+                                },
+                                "mtime": {
+                                  "type": "integer"
+                                },
+                                "parent": {
+                                  "type": "string",
+                                  "description": "脚本所处目录"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts/{file}": {
+      "get": {
+        "tags": [
+          "脚本管理"
+        ],
+        "summary": "获取脚本内容  【未知错误】",
+        "description": "使用 Token 脚本内容",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "path",
+            "description": "任务 ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "脚本目录"
+                          },
+                          "value": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "mtime": {
+                            "type": "integer"
+                          },
+                          "disabled": {
+                            "type": "boolean"
+                          },
+                          "children": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string",
+                                  "description": "脚本名"
+                                },
+                                "value": {
+                                  "type": "string"
+                                },
+                                "key": {
+                                  "type": "string",
+                                  "description": "路径"
+                                },
+                                "mtime": {
+                                  "type": "integer"
+                                },
+                                "parent": {
+                                  "type": "string",
+                                  "description": "脚本所处目录"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts": {
+      "post": {
+        "tags": [
+          "脚本管理"
+        ],
+        "summary": "添加脚本",
+        "description": "使用 Token 添加脚本",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "文件名"
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "路径"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "内容"
+                  },
+                  "originFilename": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "430": {
+            "description": "失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 430
+                    },
+                    "data": {
+                      "type": "string",
+                      "example": "文件路径禁止访问"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "脚本管理"
+        ],
+        "summary": "更新脚本",
+        "description": "使用 Token 更新脚本",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "文件名"
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "路径"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "内容"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "脚本管理"
+        ],
+        "summary": "删除脚本",
+        "description": "使用 Token 删除脚本",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "文件名"
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "路径"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts/download": {
+      "post": {
+        "tags": [
+          "脚本管理"
+        ],
+        "summary": "下载脚本",
+        "description": "使用 Token 下载脚本",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "文件名"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts/run": {
+      "put": {
+        "tags": [
+          "脚本管理"
+        ],
+        "summary": "运行脚本",
+        "description": "使用 Token 运行脚本",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "文件名"
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "路径"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scripts/stop": {
+      "put": {
+        "tags": [
+          "脚本管理"
+        ],
+        "summary": "停止运行脚本",
+        "description": "使用 Token 停止运行脚本",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "filename": {
+                    "type": "string",
+                    "description": "文件名"
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "路径"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dependencies": {
+      "get": {
+        "tags": [
+          "依赖管理"
+        ],
+        "summary": "获取已安装依赖 【未知错误】",
+        "description": "使用 Token 获取已安装依赖",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "依赖管理"
+        ],
+        "summary": "添加依赖 【未知错误】",
+        "description": "使用 Token 添加依赖 `依赖类型:` `0 NodeJs` `1 Python3` `2 Linux`",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "依赖名"
+                  },
+                  "type": {
+                    "type": "integer",
+                    "description": "类型"
+                  },
+                  "remark": {
+                    "type": "string",
+                    "description": "备注",
+                    "example": "备注"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "依赖管理"
+        ],
+        "summary": "更新依赖 【未知错误】",
+        "description": "使用 Token 更新依赖 `依赖类型:` `0 NodeJs` `1 Python3` `2 Linux`",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "依赖名"
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "依赖 ID"
+                  },
+                  "type": {
+                    "type": "integer",
+                    "description": "类型"
+                  },
+                  "remark": {
+                    "type": "string",
+                    "description": "备注",
+                    "example": "备注"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "依赖管理"
+        ],
+        "summary": "删除依赖 【未知错误】",
+        "description": "使用 Token 删除依赖",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "依赖 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "依赖 ID",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dependencies/{id}": {
+      "get": {
+        "tags": [
+          "依赖管理"
+        ],
+        "summary": "依赖详情",
+        "description": "使用 Token 根据依赖 ID 查询依赖详情",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "依赖 ID",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "依赖名"
+                        },
+                        "type": {
+                          "type": "integer",
+                          "description": "依赖类型 1为js 2为py 3为linux"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "example": "Sat Feb 05 2022 11:46:54 GMT+0800 (中国标准时间)"
+                        },
+                        "status": {
+                          "type": "integer"
+                        },
+                        "log": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "remark": {
+                          "type": "string",
+                          "description": "备注",
+                          "example": "备注"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2022-02-05T03:46:54.049Z"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "example": "2022-02-07T19:21:35.141Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dependencies/force": {
+      "delete": {
+        "tags": [
+          "依赖管理"
+        ],
+        "summary": "force 【未知错误】",
+        "description": "使用 Token force",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "依赖 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "依赖 ID",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dependencies/reinstall": {
+      "put": {
+        "tags": [
+          "依赖管理"
+        ],
+        "summary": "重装依赖",
+        "description": "使用 Token 重装依赖 `依赖类型:` `0 NodeJs` `1 Python3` `2 Linux`",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "依赖 ID 可多个ID",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "description": "依赖 ID",
+                "items": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system": {
+      "get": {
+        "tags": [
+          "系统管理"
+        ],
+        "summary": "系统版本",
+        "description": "使用 Token 查询系统版本",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "isInitialized": {
+                          "type": "boolean"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "当前版本",
+                          "example": "2.11.2"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/log/remove": {
+      "get": {
+        "tags": [
+          "系统管理"
+        ],
+        "summary": "日志删除频率",
+        "description": "使用 Token 查询日志删除频率",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "frequency": {
+                          "type": "integer",
+                          "description": "日志删除频率(天)",
+                          "example": 7
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "系统管理"
+        ],
+        "summary": "更新日志删除频率",
+        "description": "使用 Token 更新日志删除频率",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "日志删除频率(天)",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "frequency": {
+                    "type": "integer",
+                    "description": "日志删除频率(天)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "删除日志"
+                        },
+                        "command": {
+                          "type": "string",
+                          "example": "ql rmlog 7"
+                        },
+                        "schedule": {
+                          "type": "string",
+                          "example": "5 23 */7 * *"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/update-check": {
+      "put": {
+        "tags": [
+          "系统管理"
+        ],
+        "summary": "检测更新",
+        "description": "使用 Token 检测更新",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "properties": {
+                        "hasNewVersion": {
+                          "type": "boolean",
+                          "description": "是否有新版本"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "删除日志"
+                        },
+                        "lastVersion": {
+                          "type": "string",
+                          "description": "下个版本"
+                        },
+                        "lastLog": {
+                          "type": "string",
+                          "description": "更新日志"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/update": {
+      "put": {
+        "tags": [
+          "系统管理"
+        ],
+        "summary": "更新面板",
+        "description": "使用 Token 更新面板",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "成功",
