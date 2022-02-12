@@ -12,7 +12,7 @@
   "servers": [
     {
       "description": "OpenAPI",
-      "url": "http://192.168.50.125:5700/open"
+      "url": "http://localhost:5700/open"
     },
     {
       "description": "SystemAPI",
@@ -45,7 +45,7 @@
       "description": "Script"
     },
     {
-      "name": "Open",
+      "name": "OpenAPI",
       "description": "Open"
     },
     {
@@ -53,7 +53,7 @@
       "description": "Dependence"
     },
     {
-      "name": "System",
+      "name": "系统管理",
       "description": "System"
     }
   ],
@@ -258,6 +258,25 @@
                           }
                         }
                       }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
                     }
                   }
                 }
@@ -900,6 +919,231 @@
                     "message": {
                       "type": "string",
                       "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configs/files": {
+      "get": {
+        "tags": [
+          "配置管理"
+        ],
+        "summary": "获取配置文件列表",
+        "description": "使用 Token 获取配置文件列表",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "配置文件名"
+                          },
+                          "value": {
+                            "type": "string",
+                            "description": "配置文件值"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configs/{file}": {
+      "get": {
+        "tags": [
+          "配置管理"
+        ],
+        "summary": "获取配置文件内容",
+        "description": "使用 Token 获取配置文件内容",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file",
+            "in": "path",
+            "description": "配置文件名",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "string",
+                      "description": "配置文件内容",
+                      "example": "配置文件内容"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/configs/save": {
+      "post": {
+        "tags": [
+          "配置管理"
+        ],
+        "summary": "保存配置文件",
+        "description": "使用 Token 获取配置文件列表",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "保存配置文件",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "配置文件名"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "内容"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "保存成功"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未授权",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "UnauthorizedError"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "失败",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "integer",
+                      "example": 401
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "文件无法访问"
                     }
                   }
                 }
