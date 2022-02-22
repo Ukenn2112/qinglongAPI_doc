@@ -46,7 +46,7 @@
     },
     {
       "name": "依赖管理",
-      "description": "Dependence `貌似有点问题？待排查`"
+      "description": "Dependence"
     },
     {
       "name": "系统管理",
@@ -289,8 +289,8 @@
         "tags": [
           "环境变量"
         ],
-        "summary": "添加环境变量 【未知问题】",
-        "description": "使用 Token 添加环境变量",
+        "summary": "添加环境变量",
+        "description": "使用 Token 添加环境变量,可批量添加",
         "security": [
           {
             "HTTPBearer": []
@@ -301,21 +301,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "properties": {
-                  "value": {
-                    "type": "string",
-                    "description": "变量值",
-                    "example": "变量值"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "变量名",
-                    "example": "变量名"
-                  },
-                  "remarks": {
-                    "type": "string",
-                    "description": "备注",
-                    "example": "备注"
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "description": "变量值",
+                      "example": "变量值"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "变量名",
+                      "example": "变量名"
+                    },
+                    "remarks": {
+                      "type": "string",
+                      "description": "备注",
+                      "example": "备注"
+                    }
                   }
                 }
               }
@@ -332,6 +335,52 @@
                     "code": {
                       "type": "integer",
                       "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "变量 ID"
+                          },
+                          "value": {
+                            "type": "string",
+                            "description": "变量值",
+                            "example": "变量值"
+                          },
+                          "startus": {
+                            "type": "integer"
+                          },
+                          "timestamp": {
+                            "type": "string",
+                            "description": "时间戳",
+                            "example": "Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)"
+                          },
+                          "position": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "变量名",
+                            "example": "变量名"
+                          },
+                          "remarks": {
+                            "type": "string",
+                            "description": "备注",
+                            "example": "备注"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2022-02-01T03:00:53.572Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2022-02-10T03:30:08.079Z"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -3267,7 +3316,7 @@
         "tags": [
           "依赖管理"
         ],
-        "summary": "添加依赖 【未知错误】",
+        "summary": "添加依赖",
         "description": "使用 Token 添加依赖 `依赖类型:` `0 NodeJs` `1 Python3` `2 Linux`",
         "security": [
           {
@@ -3279,19 +3328,23 @@
           "content": {
             "application/json": {
               "schema": {
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "依赖名"
-                  },
-                  "type": {
-                    "type": "integer",
-                    "description": "类型"
-                  },
-                  "remark": {
-                    "type": "string",
-                    "description": "备注",
-                    "example": "备注"
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "依赖名",
+                      "example": "依赖名"
+                    },
+                    "type": {
+                      "type": "integer",
+                      "description": "类型"
+                    },
+                    "remark": {
+                      "type": "string",
+                      "description": "备注",
+                      "example": "备注"
+                    }
                   }
                 }
               }
@@ -3310,7 +3363,51 @@
                       "example": 200
                     },
                     "data": {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "依赖 ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "依赖名",
+                            "example": "依赖名"
+                          },
+                          "type": {
+                            "type": "integer"
+                          },
+                          "timestamp": {
+                            "type": "string",
+                            "description": "时间戳",
+                            "example": "Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)"
+                          },
+                          "startus": {
+                            "type": "integer"
+                          },
+                          "log": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "remarks": {
+                            "type": "string",
+                            "description": "备注",
+                            "example": "备注"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2022-02-01T03:00:53.572Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2022-02-10T03:30:08.079Z"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -3421,7 +3518,7 @@
         "tags": [
           "依赖管理"
         ],
-        "summary": "删除依赖 【未知错误】",
+        "summary": "删除依赖",
         "description": "使用 Token 删除依赖",
         "security": [
           {
@@ -3455,7 +3552,51 @@
                       "example": 200
                     },
                     "data": {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "description": "依赖 ID"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "依赖名",
+                            "example": "依赖名"
+                          },
+                          "type": {
+                            "type": "integer"
+                          },
+                          "timestamp": {
+                            "type": "string",
+                            "description": "时间戳",
+                            "example": "Thu Jan 27 2022 11:22:51 GMT+0800 (中国标准时间)"
+                          },
+                          "startus": {
+                            "type": "integer"
+                          },
+                          "log": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "remarks": {
+                            "type": "string",
+                            "description": "备注",
+                            "example": "备注"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "example": "2022-02-01T03:00:53.572Z"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "example": "2022-02-10T03:30:08.079Z"
+                          }
+                        }
+                      }
                     }
                   }
                 }
@@ -3591,7 +3732,7 @@
         "tags": [
           "依赖管理"
         ],
-        "summary": "force 【未知错误】",
+        "summary": "暴力删除",
         "description": "使用 Token force",
         "security": [
           {
