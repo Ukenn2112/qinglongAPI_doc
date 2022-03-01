@@ -3,7 +3,7 @@
   "info": {
     "title": "Qinglong API",
     "description": "在 `系统设置 -> 应用设置 -> 添加应用` 生成 `client_id` 和 `client_secret`",
-    "version": "2022-02-12",
+    "version": "2.11.3",
     "contact": {
       "name": "Qinglong API",
       "url": "https://github.com/whyour/qinglong/tree/develop/back/api"
